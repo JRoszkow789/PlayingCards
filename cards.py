@@ -90,32 +90,5 @@ class Deck:
         return cards
 
     def __len__(self):
+        """Returns the number of cards left in the deck."""
         return len(self.activeDeck)
-
-
-class Player:
-
-    def __init__(self, name, money=1000):
-        self.name = name
-        self.money = money
-        self.hand = None
-
-    def setHand(self, firstCard, secondCard):
-        self.hand = (firstCard, secondCard)
-
-    def showHand(self):
-        if len(self.hand) == 2:
-            print "<%s, %s>" % (self.hand[0], self.hand[1])
-        else:
-            for card in self.hand:
-                print card
-
-    def __repr__(self):
-        return "<%s(%d)>" % (self.name, self.money)
-
-    def __str__(self):
-        if not self.hand:
-            hand = ("None", "None")
-        else:
-            hand = self.hand
-        return "Player Name: %s\nChips: %d\nCards: %s, %s" % (self.name, self.money, hand[0], hand[1])

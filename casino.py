@@ -27,11 +27,23 @@ class ThreeCardPoker:
         player = Player(game=self, name=name, money=money)
         self.players.append(player)
 
+    def playHand(self, betSize):
+        self.dealHand()
+        self.showHands()
+        for player in self.players:
+            if player.handScore > self.handScore:
+                player.addMoney(betSize)
+            else:
+                player.takeMoney(betSize)
+        print "Game Update: "
+        for player in self.players:
+            print player
+
     def dealHand(self):
         self.shuffleDeck()
         for player in self.players:
             player.handScore = self.HIGH_CARD
-            player.hand = self.deck.drawCards(3)
+            player.setHand(self.deck.drawCards(3))
         self.handScore = self.UNQUALIFIED
         self.hand = self.deck.drawCards(3)
 
@@ -42,10 +54,11 @@ class ThreeCardPoker:
         self.displayHand(self.hand, self.handScore)
 
         for player in self.players:
-            player.handScore = self.evaluateHand(player.hand)
+            hand = player.getHand()
+            player.handScore = self.evaluateHand(hand)
             print "---------------------"
-            print "%s's hand: " % player.name
-            self.displayHand(player.hand, player.handScore)
+            print "%s's hand: " % player.getName()
+            self.displayHand(hand, player.handScore)
 
     def displayHand(self, hand, score):
         for card in hand:
@@ -122,8 +135,39 @@ class ThreeCardPoker:
 class Player:
 
     def __init__(self, game, name, money):
-        self.game = game
-        self.name = name
-        self.money = money
-        self.hand = []
+        self._game = game
+        self._name = name
+        self._money = money
+        self._hand = []
         self.handScore = game.HIGH_CARD
+
+    def addMoney(self, money):
+        self._money = self._money + money
+
+    def takeMoney(self, money):
+        if self._money < money:
+            print "Not enough money! Add some more!"
+        else:
+            self._money = self._money - money
+        return self._money
+
+    def setHand(self, hand):
+        self._hand = hand
+
+    def getHand(self):
+        return self._hand
+
+    def resetHand(self):
+        self._hand = []
+
+    def getName(self):
+        return self._name
+
+    def getMoney(self):
+        return self._money
+
+    def __repr__(self):
+        return "<%s ($%d)>" % (self._name, self._money)
+
+    def __str__(self):
+        return "PLAYER INFO -- Name: %s, Money: %d" % (self._name, self._money)
